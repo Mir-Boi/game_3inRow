@@ -3,10 +3,10 @@ let config = {
 	containerColorBG: "#353336",
 	contentColorBG: "#525053",
 
-	countRows: 6,
-	countCols: 7,
+	countRows: 8,
+	countCols: 6,
 
-	offsetBorder: 10,
+	offsetBorder: 2,
 	borderRadius: 8,
 		
 	gemSize: 64,
@@ -32,17 +32,15 @@ let player = {
 }
 
 let components = {
-	container: document.createElement( "div" ),
-	content: document.createElement( "div" ),
-	wrapper: document.createElement( "div" ),
-	cursor: document.createElement( "div" ),
-	score: document.createElement( "div" ),
+	container: document.querySelector(".container"),
+	content: document.querySelector(".content"),
+	wrapper: document.querySelector(".wrapper"),
+	cursor: document.createElement("div"),
+	score: document.querySelector(".score"),
 	gems: new Array(),
 }
 
-
-
-
+var cursorPosition = [];  // по факту это собственный маркер выделенной клетки, т.к. player.selectedRow, player.selectedCol не столь стабилен будто для этого
 
 
 // start Game
@@ -56,7 +54,7 @@ function initGame () {
 	createWrapper();
 	createCursor();
 	createGrid();
-	createScore();
+	// createScore();
 
 	// Переключаем статус игры на "выбор"
 	config.gameState = config.gameStates[ 0 ];
@@ -68,10 +66,11 @@ function createPage() {
 	components.container.style.height = "100vh";
 	components.container.style.overflow = "hidden";
 	components.container.style.display = "flex";
+	components.container.style.flexDirection = "column";
 	components.container.style.alignItems = "center";
 	components.container.style.justifyContent = "center";
 
-	document.body.append( components.container );
+	// document.body.append( components.container );
 }
 
 // Создание обертки с контентом
@@ -84,7 +83,7 @@ function createContentPage () {
 	components.content.style.borderRadius = config.borderRadius + "px";
 	components.content.style.boxSizing = "border-box";
 
-	components.container.append( components.content );
+	// components.container.append( components.content );
 }
 
 // Создание обертки для монет и очков
@@ -93,7 +92,7 @@ function createWrapper () {
 	components.wrapper.style.height = "100%";
 	components.wrapper.addEventListener("click", function(event) { handlerTab(event, event.target) });
 
-	components.content.append( components.wrapper );
+	// components.content.append( components.wrapper );
 }
 
 // Создание курсора для выделения монет
@@ -102,6 +101,7 @@ function createCursor () {
 	components.cursor.style.width = config.gemSize - 10 + "px";
 	components.cursor.style.height = config.gemSize - 10 + "px";
 	components.cursor.style.border = "5px solid white";
+	// FIXME: починить
 	components.cursor.style.borderRadius = "20px";
 	components.cursor.style.position = "absolute";
 	components.cursor.style.display = "none";
@@ -118,30 +118,15 @@ function cursorHide () {
 }
 
 // Создание блока для очков
-function createScore () {
-	components.score.style.width = 200 + "px";
-	components.score.style.height = 50 + "px";
-	components.score.style.display = "flex";
-	components.score.style.justifyContent = "center";
-	components.score.style.alignItems = "center";
-	components.score.style.borderRadius = config.borderRadius + "px";
-	components.score.style.backgroundColor = config.contentColorBG;
-	components.score.style.position = "absolute";
-	components.score.style.bottom = "calc(100% + " + 24 + "px)";
-	components.score.style.left = "calc(50% - " + ( parseInt(components.score.style.width) / 2) + "px)";
-
-	components.score.style.fontFamily = "sans-serif";
-	components.score.style.fontSize = "16px";
-	components.score.style.color = "#ffffff";
-	
-
-	updateScore();
-}
+// function createScore () {
+// 	updateScore();
+// }
 
 // Обновить очки на странице
 function updateScore () {
 	components.score.innerHTML = config.countScore;
-	components.wrapper.append( components.score );
+	// FIXME:
+	// components.wrapper.append( components.score );
 }
 
 // Добавление очков
@@ -248,6 +233,7 @@ function isHorizontalStreak( row, col ) {
 	return streak > 1;
 }
 
+// TODO: клик
 // Обработчик клика
 function handlerTab ( event, target ) {
 	// Если это элемент с классом config.gameClass
@@ -258,8 +244,25 @@ function handlerTab ( event, target ) {
 		let row = parseInt( target.getAttribute( "id" ).split( "_" )[ 1 ] );
 		let col =  parseInt( target.getAttribute( "id" ).split( "_" )[ 2 ] );
 
-		// Выделяем гем курсором
-		cursorShow();
+
+		// Если нажали на ту же клетку где и выбрали, то надо снять выделение
+		// Вот эта чертовщина это сравнение массивов :)  (если ты нажал на ту же клетку)
+		if ([row, col].every(function(element, index) {
+			return element == cursorPosition[index]; 
+		})){
+			cursorHide();  // убрали выделение визуальное
+			cursorPosition = [];  // следовательно убрали и обозначение
+
+			// сброс выбранной клетки
+			player.selectedRow = -1;  
+			player.selectedCol = -1;
+			return;
+		}
+		// console.log(player.selectedRow, player.selectedCol)
+		
+		cursorShow();  // Выделяем гем курсором
+		cursorPosition = [row, col];  // фиксируем место нажатия
+
 		components.cursor.style.top = parseInt( target.style.top ) + "px";
 		components.cursor.style.left = parseInt( target.style.left ) + "px";
 
@@ -283,6 +286,8 @@ function handlerTab ( event, target ) {
 
 					// поменять их местами
 					gemSwitch();
+
+					cursorPosition = [];  // сбрасываем выделение
 			} else {
 				// Если второй выбор произошел не рядом,
 				// то делаем его первым выбором.
