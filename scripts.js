@@ -98,6 +98,7 @@ function createWrapper () {
 // Создание курсора для выделения монет
 function createCursor () {
 	components.cursor.id = "marker";
+	components.cursor.classList.add("noselect")
 	// components.cursor.style.width = config.gemSize - 10 + "px";
 	// components.cursor.style.height = config.gemSize - 10 + "px";
 	// components.cursor.style.border = "5px solid white";
