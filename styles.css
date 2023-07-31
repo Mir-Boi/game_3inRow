@@ -1,5 +1,6 @@
 :root {
-    --contentColorBG: #525053;
+    /* --contentColorBG: #525053; */
+    --contentColorBG: var(--tg-theme-hint-color);
     --borderRadius: 8px;
     --offsetBorder: 2px;
 
