@@ -574,3 +574,4 @@ function placeNewGems() {
 }
 
 Telegram.WebApp.expand();
+Telegram.WebApp.enableClosingConfirmation();  // вышел - проиграл
