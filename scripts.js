@@ -9,8 +9,8 @@ let config = {
 	offsetBorder: 2,
 	borderRadius: 8,
 		
-	gemSize: 64,
-	
+	// заменил gemSize на components.wrapper.offsetWidth / 6
+	// gemSize: 64,
 
 	imagesGems: ["images/normal/1.png", "images/normal/2.png", "images/normal/3.png", "images/normal/4.png", "images/normal/5.png"],
 
@@ -75,13 +75,13 @@ function createPage() {
 
 // Создание обертки с контентом
 function createContentPage () {
-	components.content.style.padding = config.offsetBorder + "px";
-	components.content.style.width = (config.gemSize * config.countCols) + (config.offsetBorder * 2) + "px";
-	components.content.style.height = (config.gemSize * config.countRows) + (config.offsetBorder * 2) + "px";
-	components.content.style.backgroundColor = config.contentColorBG;
-	components.content.style.boxShadow = config.offsetBorder + "px";
-	components.content.style.borderRadius = config.borderRadius + "px";
-	components.content.style.boxSizing = "border-box";
+	// components.content.style.padding = config.offsetBorder + "px";
+	// components.content.style.width = (config.gemSize * config.countCols) + (config.offsetBorder * 2) + "px";
+	// components.content.style.height = (config.gemSize * config.countRows) + (config.offsetBorder * 2) + "px";
+	// components.content.style.backgroundColor = config.contentColorBG;
+	// components.content.style.boxShadow = config.offsetBorder + "px";
+	// components.content.style.borderRadius = config.borderRadius + "px";
+	// components.content.style.boxSizing = "border-box";
 
 	// components.container.append( components.content );
 }
@@ -98,13 +98,12 @@ function createWrapper () {
 // Создание курсора для выделения монет
 function createCursor () {
 	components.cursor.id = "marker";
-	components.cursor.style.width = config.gemSize - 10 + "px";
-	components.cursor.style.height = config.gemSize - 10 + "px";
-	components.cursor.style.border = "5px solid white";
-	// FIXME: починить
-	components.cursor.style.borderRadius = "20px";
-	components.cursor.style.position = "absolute";
-	components.cursor.style.display = "none";
+	// components.cursor.style.width = config.gemSize - 10 + "px";
+	// components.cursor.style.height = config.gemSize - 10 + "px";
+	// components.cursor.style.border = "5px solid white";
+	// components.cursor.style.borderRadius = "20px";
+	// components.cursor.style.position = "absolute";
+	// components.cursor.style.display = "none";
 
 	components.wrapper.append( components.cursor );
 }
@@ -125,8 +124,6 @@ function cursorHide () {
 // Обновить очки на странице
 function updateScore () {
 	components.score.innerHTML = config.countScore;
-	// FIXME:
-	// components.wrapper.append( components.score );
 }
 
 // Добавление очков
@@ -143,26 +140,22 @@ function scoreInc ( count ) {
 	updateScore();
 }
 
-// Создание монеты
+// TODO: Создание монеты
 function createGem ( t, l, row, col, img ) {
 	let gem = document.createElement("div");
 
 	gem.classList.add( config.gemClass );
 	gem.id = config.gemIdPrefix + '_' + row + '_' + col;
-	gem.style.boxSizing = "border-box";
-	gem.style.cursor = "pointer";
-	gem.style.position = "absolute";
-	gem.style.top = t + "px";
-	gem.style.left = l + "px";
-	gem.style.width = config.gemSize + "px";
-	gem.style.height = config.gemSize + "px";
-	// gem.style.padding = config.gemPadding + "px";
-	gem.style.border = "1p solid transparent";
+	// gem.style.top = t * 15.6 + "vw";
+	// gem.style.left = l + "px";
+	// Эта формула ниже делает следующее: при создании элементов она берет ширину div-оболочки и делает такой вот отступ
+	// Зачем нужно? Разные экраны если, то установится размер нормальный, но только при загрузке сайтов. Полагаюсь на то, что webapp не даёт менять размеров экрана
+	gem.style.top = components.wrapper.offsetWidth / config.countCols * t + "px";
+	gem.style.left = components.wrapper.offsetWidth / config.countCols * l + "px";
 	gem.style.background = "center url("+ img +") no-repeat";
 	gem.style.backgroundSize = "88%";
-	// gem.style.backgroundRepeat = "no-repeat;"
 
-	components.wrapper.append( gem );
+	components.wrapper.append(gem);
 }
 
 // Создание и наполнение сетки для монет
@@ -183,7 +176,14 @@ function createGrid() {
 				components.gems[i][j] = Math.floor(Math.random() * config.imagesGems.length);
 			} while( isStreak(i, j) );
 
-			createGem( i * config.gemSize, j * config.gemSize, i, j, config.imagesGems[ components.gems[i][j] ] );
+			createGem(
+				// t= i * config.gemSize, 
+				// l=j * config.gemSize, 
+				t=i, 
+				l=j, 
+				row=i, 
+				col=j, 
+				img=config.imagesGems[ components.gems[i][j] ] );
 		}
 	}
 }
@@ -315,8 +315,10 @@ function gemSwitch () {
 		config.movingItems++;
 
 		$(this).animate( {
-				left: "+=" + xOffset * config.gemSize * $(this).attr("dir"),
-				top: "+=" + yOffset * config.gemSize * $(this).attr("dir")
+			// components.wrapper.offsetWidth / 6 * t
+			// top: "+=" + yOffset * config.gemSize * $(this).attr("dir")
+				left: "+=" + xOffset * components.wrapper.offsetWidth / config.countCols  * $(this).attr("dir"),
+				top: "+=" + yOffset * components.wrapper.offsetWidth / config.countCols * $(this).attr("dir")
 			},
 			{
 				duration: 250,
@@ -489,7 +491,7 @@ function checkFalling() {
 		config.movingItems++;
 
 		$( this ).animate( {
-				top: "+=" + config.gemSize
+				top: "+=" + components.wrapper.offsetWidth / config.countCols
 			},
 			{
 				duration: 100,
@@ -512,6 +514,7 @@ function checkFalling() {
 
 
 // Создание новых гемов
+// TODO: newGems
 function placeNewGems() {
 	let gemsPlaced = 0;
 
@@ -519,8 +522,16 @@ function placeNewGems() {
 	for( i = 0; i < config.countCols; i++ ) {
 		if( components.gems[ 0 ][ i ] == -1 ) {
 			components.gems[ 0 ][ i ] = Math.floor( Math.random() * config.imagesGems.length );
+
 			
-			createGem( 0, i * config.gemSize, 0, i, config.imagesGems[ components.gems[ 0 ][ i ] ] );
+			createGem(
+				t=0, 
+				// l=i * config.gemSize, 
+				l=i, 
+				row=0, 
+				col=i, 
+				img=config.imagesGems[ components.gems[ 0 ][ i ] ] 
+			);
 			gemsPlaced++;
 		}
 	}

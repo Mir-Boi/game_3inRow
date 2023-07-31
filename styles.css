@@ -1,7 +1,14 @@
 :root {
-    /* --borderRadius: 8; */
     --contentColorBG: #525053;
     --borderRadius: 8px;
+    --offsetBorder: 2px;
+
+    --countCols: 6;
+    --countRows: 8;
+
+    --maxGemSize: 64px;
+    /* gemSize = 64px или меньше  если гипер узкий экран */
+    --gemSize: min(var(--maxGemSize), calc(95vw / var(--countCols))); 
 }
 
 .score {
@@ -12,13 +19,39 @@
     align-items: center;
     border-radius: var(--borderRadius);
     background-color: var(--contentColorBG);
-    /* background-color: lightpink; */
-    /* position: absolute; */
-    /* bottom: calc(100% + 24px); */
-    /* transform: translateX(50%); */
     margin-top: 15px;
     font-family: sans-serif;
     font-size: 16px;
     color: white;
+}
+
+.content {
+    padding: var(--offsetBorder);
+    width: calc(var(--gemSize) * var(--countCols) + var(--offsetBorder) * 2);
+    height: calc(var(--gemSize) * var(--countRows) + var(--offsetBorder) * 2);
+    background-color: var(--contentColorBG);
+    box-shadow: var(--offsetBorder);
+    border-radius: var(--borderRadius);
+    /* box-shadow:  0px 0px 12px var(--contentColorBG),
+                0px 0px 12px #bebebe; */
+    box-sizing: border-box;
+}
+
+.gem {
+    width: var(--gemSize);
+    height: var(--gemSize);
+    box-sizing: border-box;
+    cursor: pointer;
+    position: absolute;
+    /* border: 1px solid black; */
+}
+
+#marker {
+    width: calc(var(--gemSize) - 10px); 
+    height: calc(var(--gemSize) - 10px); 
+    border: calc(var(--gemSize) / 12) solid white;
+    border-radius: calc(var(--gemSize) / 3);
+    position: absolute;
+    display: none;
 }
 
