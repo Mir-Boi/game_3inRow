@@ -98,9 +98,7 @@ function createWrapper () {
 // Создание курсора для выделения монет
 function createCursor () {
 	components.cursor.id = "marker";
-	components.cursor.classList.add("noselect");
-	components.cursor.unselectable = "on";
-	components.cursor.onselectstart = "return false;";
+	// components.cursor.classList.add("noselect");
 	// components.cursor.style.width = config.gemSize - 10 + "px";
 	// components.cursor.style.height = config.gemSize - 10 + "px";
 	// components.cursor.style.border = "5px solid white";
@@ -149,8 +147,6 @@ function createGem ( t, l, row, col, img ) {
 
 	gem.classList.add( config.gemClass );
 	gem.classList.add("noselect");
-	gem.unselectable = "on";
-	gem.onselectstart = "return false;";
 	gem.id = config.gemIdPrefix + '_' + row + '_' + col;
 	// gem.style.top = t * 15.6 + "vw";
 	// gem.style.left = l + "px";
