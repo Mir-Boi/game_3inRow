@@ -1,6 +1,6 @@
 :root {
     /* --contentColorBG: #525053; */
-    --contentColorBG: var(--tg-theme-hint-color);
+    --contentColorBG: var(--tg-theme-hint-color, #525053);
     --borderRadius: 8px;
     --offsetBorder: 2px;
 
@@ -22,7 +22,7 @@
     background-color: var(--contentColorBG);
     margin-top: 15px;
     font-family: sans-serif;
-    font-size: 32px;
+    font-size: 40px;
     font-weight: 800;
     color: var(--tg-theme-button-color);
 }
