@@ -572,3 +572,5 @@ function placeNewGems() {
 		}
 	}
 }
+
+Telegram.WebApp.expand();

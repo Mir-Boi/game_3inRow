@@ -21,8 +21,8 @@
     background-color: var(--contentColorBG);
     margin-top: 15px;
     font-family: sans-serif;
-    font-size: 16px;
-    color: white;
+    font-size: 28px;
+    color: var(--tg-theme-button-color);
 }
 
 .content {
@@ -56,5 +56,6 @@
 }
 
 .noselect {
+    /* Чтобы не было голубого выделения при нажатии с экрана */
     -webkit-tap-highlight-color: transparent;
 }
