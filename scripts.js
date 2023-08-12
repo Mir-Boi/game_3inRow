@@ -63,7 +63,7 @@ function initGame () {
 // Создание обертки для страницы
 function createPage() {
 	components.container.style.backgroundColor = config.containerColorBG;
-	components.container.style.height = "100vh";
+	// components.container.style.height = "100vh";
 	components.container.style.overflow = "hidden";
 	components.container.style.display = "flex";
 	components.container.style.flexDirection = "column";
